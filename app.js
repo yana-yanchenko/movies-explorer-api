@@ -17,8 +17,6 @@ const { NODE_ENV } = process.env;
 const { PORT, DB } = NODE_ENV === 'production' ? process.env : config;
 
 
-
-
 app.listen(PORT, () => {
   console.log(`Server start http://localhost:${PORT}`);
 });
