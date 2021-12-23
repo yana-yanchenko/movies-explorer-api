@@ -1,6 +1,6 @@
 const allowedCors = [
-  'http://mesto-yana.nomoredomains.rocks',
-  'https://mesto-yana.nomoredomains.rocks',
+  'http://explorer-diploma.nomoredomains.rocks',
+  'https://explorer-diploma.nomoredomains.rocks',
   'https://localhost:3000',
   'http://localhost:3000',
 ];
