@@ -1,11 +1,10 @@
-const movieModel = require('../models/movie');
+const MovieModel = require('../models/movie');
 const BadRequestError = require('../errors/bad-request-err');
-const ConflictError = require('../errors/сonflict-err');
-const NotFoundError = require('../errors/not-found-err');
 const ForbiddenError = require('../errors/forbidden-err');
+const messages = require('../utils/messages');
 
 module.exports.getMovies = (req, res, next) => {
-  movieModel.find({})
+  MovieModel.find({ owner: req.user._id })
     .then((movies) => {
       res.send(movies);
     })
@@ -23,7 +22,7 @@ module.exports.createMovie = (req, res, next) => {
   } = req.body;
 
   MovieModel.create({
-    owner: req.user.id,
+    owner: req.user._id,
     country,
     director,
     duration,
@@ -39,28 +38,30 @@ module.exports.createMovie = (req, res, next) => {
     .then((movie) => res.status(201).send(movie))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequestError('400 — Переданы некорректные данные при создании карточки.'));
+        next(new BadRequestError(messages.err_data_create_movie));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
 module.exports.deleteMovie = (req, res, next) => {
   const { movieId } = req.params;
   MovieModel.findById(movieId)
-    .orFail(() => new BadRequestError('400 — Переданы некорректные данные при обновлении профиля.'))
+    .orFail(() => new BadRequestError(messages.err_delete_movie))
     .then((movie) => {
       if (movie.owner.toString() !== req.user._id.toString()) {
-        throw new ForbiddenError('Карточка вам не пренадлежит!');
+        throw new ForbiddenError(messages.err_conflict_delete_movie);
       }
       MovieModel.findByIdAndRemove(movieId)
-        .then(() => res.send('y'))
+        .then(() => res.send({ message: messages.delete_movie_ok }))
         .catch((err) => next(err));
     })
     .catch((err) => {
-      if (err.name === 'CastError' || err.name === 'ValidationError') {
-        next(new BadRequestError('400 — Переданы некорректные данные для удаления карточки'));
+      if (err.name === 'CastError') {
+        next(new BadRequestError(messages.err_delete_movie));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };

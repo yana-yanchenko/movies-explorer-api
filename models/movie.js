@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const messages = require('../utils/messages');
 
 const movieSchema = new mongoose.Schema({
   country: {
@@ -26,42 +27,30 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: true,
     validate: {
-      validator: (link) => {
-        validator.isUrl(link, {
-          require_protocol: true
-        })
-      },
-      message: "g"
+      validator: (link) => validator.isURL(link, { require_protocol: true }),
+      message: messages.err_valid_url,
     },
   },
   trailer: {
     type: String,
     required: true,
     validate: {
-      validator: (link) => {
-        validator.isUrl(link, {
-          require_protocol: true
-        })
-      },
-      message: "g"
+      validator: (link) => validator.isURL(link, { require_protocol: true }),
+      message: messages.err_valid_url,
     },
   },
   thumbnail: {
     type: String,
     required: true,
     validate: {
-      validator: (link) => {
-        validator.isUrl(link, {
-          require_protocol: true
-        })
-      },
-      message: "g"
+      validator: (link) => validator.isURL(link, { require_protocol: true }),
+      message: messages.err_valid_url,
     },
   },
   owner: {
     required: true,
-    type: mongoose.SchemaType.ObjectId,
-    ref: "user",
+    type: mongoose.SchemaTypes.ObjectId,
+    ref: 'user',
   },
   movieId: {
     required: true,
@@ -74,7 +63,7 @@ const movieSchema = new mongoose.Schema({
   nameEN: {
     type: String,
     required: true,
-  }
+  },
 });
 
 module.exports = mongoose.model('movie', movieSchema);
