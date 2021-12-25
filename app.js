@@ -18,13 +18,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(requestLogger);
+app.use(limiter);
 app.use(helmet());
 app.use(cors);
-app.use(limiter);
 app.use(router);
 
-app.use(errors());
 app.use(errorLogger);
+app.use(errors());
 app.use(errorsCentralHandler);
 
 const { NODE_ENV } = process.env;
